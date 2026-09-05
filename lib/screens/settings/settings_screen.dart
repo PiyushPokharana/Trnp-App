@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../providers.dart';
+import 'import_export_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -116,13 +117,17 @@ class SettingsScreen extends ConsumerWidget {
               icon: LucideIcons.uploadCloud,
               title: 'Google Account Cloud Backup',
               subtitle: 'Auto-synced to ${user?.email ?? 'Google Account'}',
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const ImportExportScreen()));
+              },
             ),
             _buildSettingsTile(
               icon: LucideIcons.fileSpreadsheet,
-              title: 'Excel Reports Export',
+              title: 'Excel Reports Export & Import',
               subtitle: 'Export transactions, ledgers, & P&L to .xlsx',
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const ImportExportScreen()));
+              },
             ),
           ],
         ),

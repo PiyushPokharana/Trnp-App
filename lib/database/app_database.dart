@@ -52,6 +52,13 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
+  Stream<List<Transaction>> watchPersonTimeline(int personId) {
+    return (select(transactions)
+          ..where((tbl) => tbl.personId.equals(personId) & tbl.isDeleted.equals(false))
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.date)]))
+        .watch();
+  }
+
   // --- VEHICLES HELPER METHODS ---
   Stream<List<Vehicle>> watchVehiclesByCompany(int companyId) {
     return (select(vehicles)..where((tbl) => tbl.companyId.equals(companyId))).watch();
@@ -59,6 +66,13 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> insertVehicle(VehiclesCompanion vehicle) {
     return into(vehicles).insert(vehicle);
+  }
+
+  Stream<List<Transaction>> watchVehicleTimeline(int vehicleId) {
+    return (select(transactions)
+          ..where((tbl) => tbl.vehicleId.equals(vehicleId) & tbl.isDeleted.equals(false))
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.date)]))
+        .watch();
   }
 
   // --- CATEGORIES & ACCOUNTS HELPER METHODS ---
