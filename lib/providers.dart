@@ -50,3 +50,19 @@ final recentTransactionsStreamProvider = StreamProvider<List<Transaction>>((ref)
   if (company == null) return Stream.value([]);
   return db.watchRecentTransactions(company.id);
 });
+
+/// Trips Stream Provider (Transport Business)
+final tripsStreamProvider = StreamProvider<List<Trip>>((ref) {
+  final db = ref.watch(databaseProvider);
+  final company = ref.watch(selectedCompanyProvider);
+  if (company == null) return Stream.value([]);
+  return db.watchTripsByCompany(company.id);
+});
+
+/// Deals Stream Provider (Truck Trading Business)
+final dealsStreamProvider = StreamProvider<List<TruckDeal>>((ref) {
+  final db = ref.watch(databaseProvider);
+  final company = ref.watch(selectedCompanyProvider);
+  if (company == null) return Stream.value([]);
+  return db.watchDealsByCompany(company.id);
+});

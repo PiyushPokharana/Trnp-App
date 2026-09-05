@@ -101,6 +101,77 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
+  // --- TRIPS HELPER METHODS ---
+  Stream<List<Trip>> watchTripsByCompany(int companyId) {
+    return (select(trips)
+          ..where((tbl) => tbl.companyId.equals(companyId))
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.createdAt)]))
+        .watch();
+  }
+
+  Future<int> insertTrip(TripsCompanion trip) {
+    return into(trips).insert(trip);
+  }
+
+  Stream<List<Transaction>> watchTripTransactions(int tripId) {
+    return (select(transactions)
+          ..where((tbl) => tbl.tripId.equals(tripId) & tbl.isDeleted.equals(false))
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.date)]))
+        .watch();
+  }
+
+  Future<void> updateTripStatus(int tripId, String status) {
+    return (update(trips)..where((tbl) => tbl.id.equals(tripId))).write(
+      TripsCompanion(status: Value(status)),
+    );
+  }
+
+  // --- TRUCK DEALS HELPER METHODS ---
+  Stream<List<TruckDeal>> watchDealsByCompany(int companyId) {
+    return (select(truckDeals)
+          ..where((tbl) => tbl.companyId.equals(companyId))
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.createdAt)]))
+        .watch();
+  }
+
+  Future<int> insertDealWithComponents(TruckDealsCompanion deal, List<String> components) async {
+    return transaction(() async {
+      final dealId = await into(truckDeals).insert(deal);
+
+      for (final compType in components) {
+        await into(vehicleComponents).insert(VehicleComponentsCompanion.insert(
+          vehicleId: deal.vehicleId.value,
+          componentType: compType,
+          status: const Value('Unsold'),
+        ));
+      }
+      return dealId;
+    });
+  }
+
+  Stream<List<VehicleComponent>> watchDealComponents(int vehicleId) {
+    return (select(vehicleComponents)..where((tbl) => tbl.vehicleId.equals(vehicleId))).watch();
+  }
+
+  Stream<List<Transaction>> watchDealTransactions(int dealId) {
+    return (select(transactions)
+          ..where((tbl) => tbl.dealId.equals(dealId) & tbl.isDeleted.equals(false))
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.date)]))
+        .watch();
+  }
+
+  Future<void> recordComponentSale(TransactionsCompanion tx, int componentId) async {
+    await transaction(() async {
+      final txId = await into(transactions).insert(tx);
+      await (update(vehicleComponents)..where((tbl) => tbl.id.equals(componentId))).write(
+        VehicleComponentsCompanion(
+          status: const Value('Sold'),
+          saleTransactionId: Value(txId),
+        ),
+      );
+    });
+  }
+
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) async {

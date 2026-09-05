@@ -4,6 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:intl/intl.dart';
 import '../../providers.dart';
+import '../transport/create_trip_screen.dart';
+import '../transport/trip_detail_screen.dart';
+import '../trading/create_deal_screen.dart';
+import '../trading/deal_detail_screen.dart';
 
 class HomeDashboardScreen extends ConsumerWidget {
   const HomeDashboardScreen({super.key});
@@ -12,6 +16,10 @@ class HomeDashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final company = ref.watch(selectedCompanyProvider);
     final transactionsAsync = ref.watch(recentTransactionsStreamProvider);
+    final tripsAsync = ref.watch(tripsStreamProvider);
+    final dealsAsync = ref.watch(dealsStreamProvider);
+
+    final isTransport = company?.businessType == 'Transport';
 
     return Scaffold(
       backgroundColor: const Color(0xFF0F172A),
@@ -68,7 +76,6 @@ class HomeDashboardScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // KPI Cards
                   Row(
                     children: [
                       Expanded(
@@ -100,17 +107,136 @@ class HomeDashboardScreen extends ConsumerWidget {
                   ),
 
                   const SizedBox(height: 24),
+
+                  if (isTransport) ...[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'ACTIVE TRIPS',
+                          style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.2, color: const Color(0xFF94A3B8)),
+                        ),
+                        TextButton.icon(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => const CreateTripScreen()));
+                          },
+                          icon: const Icon(LucideIcons.plus, size: 14, color: Colors.amber),
+                          label: Text('+ Start Trip', style: TextStyle(color: Colors.amber.shade400, fontSize: 12)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    tripsAsync.when(
+                      data: (trips) {
+                        if (trips.isEmpty) {
+                          return Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(color: const Color(0xFF1E293B), borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFF334155))),
+                            child: Row(
+                              children: [
+                                const Icon(LucideIcons.truck, color: Color(0xFF64748B)),
+                                const SizedBox(width: 12),
+                                Expanded(child: Text('No active trips running. Tap "+ Start Trip"', style: GoogleFonts.inter(color: const Color(0xFF94A3B8)))),
+                              ],
+                            ),
+                          );
+                        }
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: trips.length,
+                          itemBuilder: (ctx, idx) {
+                            final trip = trips[idx];
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 8),
+                              decoration: BoxDecoration(color: const Color(0xFF1E293B), borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFF334155))),
+                              child: ListTile(
+                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => TripDetailScreen(trip: trip))),
+                                leading: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(10)),
+                                  child: const Icon(LucideIcons.truck, color: Colors.blueAccent),
+                                ),
+                                title: Text('Trip #${trip.id} (${trip.status})', style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold)),
+                                subtitle: Text('${trip.origin ?? 'Origin'} → ${trip.destination ?? 'Destination'}', style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12)),
+                                trailing: Text('₹${trip.freightAmount.toStringAsFixed(0)}', style: GoogleFonts.outfit(color: Colors.amber.shade400, fontWeight: FontWeight.bold, fontSize: 16)),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      loading: () => const SizedBox(),
+                      error: (_, __) => const SizedBox(),
+                    ),
+                  ] else ...[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'ACTIVE TRUCK PURCHASES / DEALS',
+                          style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.2, color: const Color(0xFF94A3B8)),
+                        ),
+                        TextButton.icon(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => const CreateDealScreen()));
+                          },
+                          icon: const Icon(LucideIcons.plus, size: 14, color: Colors.amber),
+                          label: Text('+ New Deal', style: TextStyle(color: Colors.amber.shade400, fontSize: 12)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    dealsAsync.when(
+                      data: (deals) {
+                        if (deals.isEmpty) {
+                          return Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(color: const Color(0xFF1E293B), borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFF334155))),
+                            child: Row(
+                              children: [
+                                const Icon(LucideIcons.wrench, color: Color(0xFF64748B)),
+                                const SizedBox(width: 12),
+                                Expanded(child: Text('No active deals registered. Tap "+ New Deal"', style: GoogleFonts.inter(color: const Color(0xFF94A3B8)))),
+                              ],
+                            ),
+                          );
+                        }
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: deals.length,
+                          itemBuilder: (ctx, idx) {
+                            final deal = deals[idx];
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 8),
+                              decoration: BoxDecoration(color: const Color(0xFF1E293B), borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFF334155))),
+                              child: ListTile(
+                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DealDetailScreen(deal: deal))),
+                                leading: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(color: const Color(0xFF10B981).withValues(alpha: 0.15), borderRadius: BorderRadius.circular(10)),
+                                  child: const Icon(LucideIcons.wrench, color: Color(0xFF34D399)),
+                                ),
+                                title: Text('Deal #${deal.id} (${deal.dealType})', style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold)),
+                                subtitle: Text('Purchased for ₹${deal.purchaseAmount.toStringAsFixed(0)}', style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12)),
+                                trailing: const Icon(LucideIcons.chevronRight, color: Color(0xFF64748B)),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      loading: () => const SizedBox(),
+                      error: (_, __) => const SizedBox(),
+                    ),
+                  ],
+
+                  const SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         'RECENT ACTIVITY FEED',
-                        style: GoogleFonts.outfit(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2,
-                          color: const Color(0xFF94A3B8),
-                        ),
+                        style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.2, color: const Color(0xFF94A3B8)),
                       ),
                       TextButton(
                         onPressed: () {},
@@ -134,20 +260,13 @@ class HomeDashboardScreen extends ConsumerWidget {
                           const SizedBox(height: 12),
                           Text(
                             'No transactions recorded today',
-                            style: GoogleFonts.outfit(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: GoogleFonts.outfit(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             'Tap the yellow "+" button below to record your first entry',
                             textAlign: TextAlign.center,
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              color: const Color(0xFF94A3B8),
-                            ),
+                            style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF94A3B8)),
                           ),
                         ],
                       ),
@@ -186,11 +305,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                             ),
                             trailing: Text(
                               '${isInflow ? '+' : '-'} ₹${tx.amount.toStringAsFixed(2)}',
-                              style: GoogleFonts.outfit(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: isInflow ? Colors.greenAccent : Colors.redAccent,
-                              ),
+                              style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: isInflow ? Colors.greenAccent : Colors.redAccent),
                             ),
                           ),
                         );
@@ -230,21 +345,14 @@ class HomeDashboardScreen extends ConsumerWidget {
               const SizedBox(width: 8),
               Text(
                 title,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: const Color(0xFF94A3B8),
-                ),
+                style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF94A3B8)),
               ),
             ],
           ),
           const SizedBox(height: 8),
           Text(
             amount,
-            style: GoogleFonts.outfit(
-              fontSize: isFullWidth ? 24 : 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+            style: GoogleFonts.outfit(fontSize: isFullWidth ? 24 : 20, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ],
       ),
