@@ -1,18 +1,18 @@
 # TRNP Business History App
 
-A Flutter-based business history and transaction tracking app designed for transport and truck trading/scrap businesses. The system focuses on capturing daily business activity, customer and vehicle history, transaction records, and business summaries in a simple dashboard-first experience.
+A Flutter app for managing transport and truck trading/scrap business history, transaction records, company data, and dashboards.
 
 ## Overview
 
-TRNP helps a business owner record and review:
+TRNP helps a business owner track:
 
 - company activity across multiple businesses
 - people, vehicles, and payment accounts
-- transaction records such as income, expenses, payments, and advances
-- trip and deal-based business history
-- quick summaries and business dashboards
+- income, expenses, advances, and other transactions
+- trip and deal histories
+- business summaries and reporting dashboards
 
-This project is built around a shared transaction engine and company-specific tracking model so the same app can support multiple business contexts without duplicating core ledger logic.
+The app is built around a shared transaction engine with company-specific context, so transport and trading records can sit in the same system without duplicating the core ledger logic.
 
 ## Tech Stack
 
@@ -27,29 +27,57 @@ This project is built around a shared transaction engine and company-specific tr
 ## Features
 
 - multi-company business selector
-- user authentication flow
+- Google authentication flow
 - local database persistence
-- master data for people, vehicles, and accounts
+- master data management for people, vehicles, and accounts
 - transaction recording engine
-- business dashboard and navigation screens
+- dashboard navigation screens
+- report and history views
 - transport and trading workflow structure
-- test coverage for app baseline
 
 ## Project Structure
 
-- lib/ — application code and screens
-- lib/database/ — local database and schema
-- lib/services/ — app services
-- test/ — widget and app tests
-- android/, ios/, linux/, macos/, web/, windows/ — platform targets
+- lib/ — app logic and screens
+- lib/database/ — SQLite schema and Drift tables
+- lib/services/ — auth and app services
+- test/ — project tests
+- android/ — Android configuration and app files
+- ios/ — iOS configuration and app files
+- linux/, macos/, windows/, web/ — platform-specific targets
 
 ## Prerequisites
 
 Before running the app, install:
 
 - Flutter SDK 3.6.1 or newer
-- Android Studio / Xcode depending on your target platform
+- Android Studio or Xcode for your target platform
 - Git
+- Firebase project access for Google Sign-In configuration
+
+## Google Sign-In / Firebase Setup
+
+This project uses Google authentication and Firebase-based Android configuration for sign-in support.
+
+Important:
+
+- Do not commit your Firebase or Google auth credentials to GitHub.
+- Keep your configuration files local and private.
+- The repo already ignores sensitive files such as `google-services.json` and `GoogleService-Info.plist`.
+
+Required files for local setup:
+
+1. Android:
+   - `android/app/google-services.json`
+
+2. iOS:
+   - `ios/Runner/GoogleService-Info.plist`
+
+3. Firebase project configuration:
+   - enable Google Sign-In in Firebase Authentication
+   - add your Android package name and SHA-1/SHA-256 certificates
+   - add your iOS bundle ID and corresponding configuration
+
+If these files are missing, the app will not authenticate correctly in a local environment.
 
 ## Getting Started
 
@@ -64,12 +92,16 @@ Before running the app, install:
    flutter pub get
    ```
 
-3. Run the app:
+3. Add your Google/Firebase configuration files locally:
+   - Android: `android/app/google-services.json`
+   - iOS: `ios/Runner/GoogleService-Info.plist`
+
+4. Run the app:
    ```bash
    flutter run
    ```
 
-4. Run tests:
+5. Run tests:
    ```bash
    flutter test
    ```
