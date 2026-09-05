@@ -5107,6 +5107,445 @@ class AuditLogsCompanion extends UpdateCompanion<AuditLog> {
   }
 }
 
+class $AttachmentsTable extends Attachments
+    with TableInfo<$AttachmentsTable, Attachment> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AttachmentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _transactionIdMeta =
+      const VerificationMeta('transactionId');
+  @override
+  late final GeneratedColumn<int> transactionId = GeneratedColumn<int>(
+      'transaction_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES transactions (id)'));
+  static const VerificationMeta _vehicleIdMeta =
+      const VerificationMeta('vehicleId');
+  @override
+  late final GeneratedColumn<int> vehicleId = GeneratedColumn<int>(
+      'vehicle_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES vehicles (id)'));
+  static const VerificationMeta _personIdMeta =
+      const VerificationMeta('personId');
+  @override
+  late final GeneratedColumn<int> personId = GeneratedColumn<int>(
+      'person_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES people (id)'));
+  static const VerificationMeta _fileUrlMeta =
+      const VerificationMeta('fileUrl');
+  @override
+  late final GeneratedColumn<String> fileUrl = GeneratedColumn<String>(
+      'file_url', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _fileTypeMeta =
+      const VerificationMeta('fileType');
+  @override
+  late final GeneratedColumn<String> fileType = GeneratedColumn<String>(
+      'file_type', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('Image'));
+  static const VerificationMeta _uploadedByMeta =
+      const VerificationMeta('uploadedBy');
+  @override
+  late final GeneratedColumn<String> uploadedBy = GeneratedColumn<String>(
+      'uploaded_by', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('Owner'));
+  static const VerificationMeta _uploadedAtMeta =
+      const VerificationMeta('uploadedAt');
+  @override
+  late final GeneratedColumn<DateTime> uploadedAt = GeneratedColumn<DateTime>(
+      'uploaded_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        transactionId,
+        vehicleId,
+        personId,
+        fileUrl,
+        fileType,
+        uploadedBy,
+        uploadedAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'attachments';
+  @override
+  VerificationContext validateIntegrity(Insertable<Attachment> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('transaction_id')) {
+      context.handle(
+          _transactionIdMeta,
+          transactionId.isAcceptableOrUnknown(
+              data['transaction_id']!, _transactionIdMeta));
+    }
+    if (data.containsKey('vehicle_id')) {
+      context.handle(_vehicleIdMeta,
+          vehicleId.isAcceptableOrUnknown(data['vehicle_id']!, _vehicleIdMeta));
+    }
+    if (data.containsKey('person_id')) {
+      context.handle(_personIdMeta,
+          personId.isAcceptableOrUnknown(data['person_id']!, _personIdMeta));
+    }
+    if (data.containsKey('file_url')) {
+      context.handle(_fileUrlMeta,
+          fileUrl.isAcceptableOrUnknown(data['file_url']!, _fileUrlMeta));
+    } else if (isInserting) {
+      context.missing(_fileUrlMeta);
+    }
+    if (data.containsKey('file_type')) {
+      context.handle(_fileTypeMeta,
+          fileType.isAcceptableOrUnknown(data['file_type']!, _fileTypeMeta));
+    }
+    if (data.containsKey('uploaded_by')) {
+      context.handle(
+          _uploadedByMeta,
+          uploadedBy.isAcceptableOrUnknown(
+              data['uploaded_by']!, _uploadedByMeta));
+    }
+    if (data.containsKey('uploaded_at')) {
+      context.handle(
+          _uploadedAtMeta,
+          uploadedAt.isAcceptableOrUnknown(
+              data['uploaded_at']!, _uploadedAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Attachment map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Attachment(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      transactionId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}transaction_id']),
+      vehicleId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}vehicle_id']),
+      personId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}person_id']),
+      fileUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}file_url'])!,
+      fileType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}file_type'])!,
+      uploadedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}uploaded_by'])!,
+      uploadedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}uploaded_at'])!,
+    );
+  }
+
+  @override
+  $AttachmentsTable createAlias(String alias) {
+    return $AttachmentsTable(attachedDatabase, alias);
+  }
+}
+
+class Attachment extends DataClass implements Insertable<Attachment> {
+  final int id;
+  final int? transactionId;
+  final int? vehicleId;
+  final int? personId;
+  final String fileUrl;
+  final String fileType;
+  final String uploadedBy;
+  final DateTime uploadedAt;
+  const Attachment(
+      {required this.id,
+      this.transactionId,
+      this.vehicleId,
+      this.personId,
+      required this.fileUrl,
+      required this.fileType,
+      required this.uploadedBy,
+      required this.uploadedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || transactionId != null) {
+      map['transaction_id'] = Variable<int>(transactionId);
+    }
+    if (!nullToAbsent || vehicleId != null) {
+      map['vehicle_id'] = Variable<int>(vehicleId);
+    }
+    if (!nullToAbsent || personId != null) {
+      map['person_id'] = Variable<int>(personId);
+    }
+    map['file_url'] = Variable<String>(fileUrl);
+    map['file_type'] = Variable<String>(fileType);
+    map['uploaded_by'] = Variable<String>(uploadedBy);
+    map['uploaded_at'] = Variable<DateTime>(uploadedAt);
+    return map;
+  }
+
+  AttachmentsCompanion toCompanion(bool nullToAbsent) {
+    return AttachmentsCompanion(
+      id: Value(id),
+      transactionId: transactionId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(transactionId),
+      vehicleId: vehicleId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(vehicleId),
+      personId: personId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(personId),
+      fileUrl: Value(fileUrl),
+      fileType: Value(fileType),
+      uploadedBy: Value(uploadedBy),
+      uploadedAt: Value(uploadedAt),
+    );
+  }
+
+  factory Attachment.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Attachment(
+      id: serializer.fromJson<int>(json['id']),
+      transactionId: serializer.fromJson<int?>(json['transactionId']),
+      vehicleId: serializer.fromJson<int?>(json['vehicleId']),
+      personId: serializer.fromJson<int?>(json['personId']),
+      fileUrl: serializer.fromJson<String>(json['fileUrl']),
+      fileType: serializer.fromJson<String>(json['fileType']),
+      uploadedBy: serializer.fromJson<String>(json['uploadedBy']),
+      uploadedAt: serializer.fromJson<DateTime>(json['uploadedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'transactionId': serializer.toJson<int?>(transactionId),
+      'vehicleId': serializer.toJson<int?>(vehicleId),
+      'personId': serializer.toJson<int?>(personId),
+      'fileUrl': serializer.toJson<String>(fileUrl),
+      'fileType': serializer.toJson<String>(fileType),
+      'uploadedBy': serializer.toJson<String>(uploadedBy),
+      'uploadedAt': serializer.toJson<DateTime>(uploadedAt),
+    };
+  }
+
+  Attachment copyWith(
+          {int? id,
+          Value<int?> transactionId = const Value.absent(),
+          Value<int?> vehicleId = const Value.absent(),
+          Value<int?> personId = const Value.absent(),
+          String? fileUrl,
+          String? fileType,
+          String? uploadedBy,
+          DateTime? uploadedAt}) =>
+      Attachment(
+        id: id ?? this.id,
+        transactionId:
+            transactionId.present ? transactionId.value : this.transactionId,
+        vehicleId: vehicleId.present ? vehicleId.value : this.vehicleId,
+        personId: personId.present ? personId.value : this.personId,
+        fileUrl: fileUrl ?? this.fileUrl,
+        fileType: fileType ?? this.fileType,
+        uploadedBy: uploadedBy ?? this.uploadedBy,
+        uploadedAt: uploadedAt ?? this.uploadedAt,
+      );
+  Attachment copyWithCompanion(AttachmentsCompanion data) {
+    return Attachment(
+      id: data.id.present ? data.id.value : this.id,
+      transactionId: data.transactionId.present
+          ? data.transactionId.value
+          : this.transactionId,
+      vehicleId: data.vehicleId.present ? data.vehicleId.value : this.vehicleId,
+      personId: data.personId.present ? data.personId.value : this.personId,
+      fileUrl: data.fileUrl.present ? data.fileUrl.value : this.fileUrl,
+      fileType: data.fileType.present ? data.fileType.value : this.fileType,
+      uploadedBy:
+          data.uploadedBy.present ? data.uploadedBy.value : this.uploadedBy,
+      uploadedAt:
+          data.uploadedAt.present ? data.uploadedAt.value : this.uploadedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Attachment(')
+          ..write('id: $id, ')
+          ..write('transactionId: $transactionId, ')
+          ..write('vehicleId: $vehicleId, ')
+          ..write('personId: $personId, ')
+          ..write('fileUrl: $fileUrl, ')
+          ..write('fileType: $fileType, ')
+          ..write('uploadedBy: $uploadedBy, ')
+          ..write('uploadedAt: $uploadedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, transactionId, vehicleId, personId,
+      fileUrl, fileType, uploadedBy, uploadedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Attachment &&
+          other.id == this.id &&
+          other.transactionId == this.transactionId &&
+          other.vehicleId == this.vehicleId &&
+          other.personId == this.personId &&
+          other.fileUrl == this.fileUrl &&
+          other.fileType == this.fileType &&
+          other.uploadedBy == this.uploadedBy &&
+          other.uploadedAt == this.uploadedAt);
+}
+
+class AttachmentsCompanion extends UpdateCompanion<Attachment> {
+  final Value<int> id;
+  final Value<int?> transactionId;
+  final Value<int?> vehicleId;
+  final Value<int?> personId;
+  final Value<String> fileUrl;
+  final Value<String> fileType;
+  final Value<String> uploadedBy;
+  final Value<DateTime> uploadedAt;
+  const AttachmentsCompanion({
+    this.id = const Value.absent(),
+    this.transactionId = const Value.absent(),
+    this.vehicleId = const Value.absent(),
+    this.personId = const Value.absent(),
+    this.fileUrl = const Value.absent(),
+    this.fileType = const Value.absent(),
+    this.uploadedBy = const Value.absent(),
+    this.uploadedAt = const Value.absent(),
+  });
+  AttachmentsCompanion.insert({
+    this.id = const Value.absent(),
+    this.transactionId = const Value.absent(),
+    this.vehicleId = const Value.absent(),
+    this.personId = const Value.absent(),
+    required String fileUrl,
+    this.fileType = const Value.absent(),
+    this.uploadedBy = const Value.absent(),
+    this.uploadedAt = const Value.absent(),
+  }) : fileUrl = Value(fileUrl);
+  static Insertable<Attachment> custom({
+    Expression<int>? id,
+    Expression<int>? transactionId,
+    Expression<int>? vehicleId,
+    Expression<int>? personId,
+    Expression<String>? fileUrl,
+    Expression<String>? fileType,
+    Expression<String>? uploadedBy,
+    Expression<DateTime>? uploadedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (transactionId != null) 'transaction_id': transactionId,
+      if (vehicleId != null) 'vehicle_id': vehicleId,
+      if (personId != null) 'person_id': personId,
+      if (fileUrl != null) 'file_url': fileUrl,
+      if (fileType != null) 'file_type': fileType,
+      if (uploadedBy != null) 'uploaded_by': uploadedBy,
+      if (uploadedAt != null) 'uploaded_at': uploadedAt,
+    });
+  }
+
+  AttachmentsCompanion copyWith(
+      {Value<int>? id,
+      Value<int?>? transactionId,
+      Value<int?>? vehicleId,
+      Value<int?>? personId,
+      Value<String>? fileUrl,
+      Value<String>? fileType,
+      Value<String>? uploadedBy,
+      Value<DateTime>? uploadedAt}) {
+    return AttachmentsCompanion(
+      id: id ?? this.id,
+      transactionId: transactionId ?? this.transactionId,
+      vehicleId: vehicleId ?? this.vehicleId,
+      personId: personId ?? this.personId,
+      fileUrl: fileUrl ?? this.fileUrl,
+      fileType: fileType ?? this.fileType,
+      uploadedBy: uploadedBy ?? this.uploadedBy,
+      uploadedAt: uploadedAt ?? this.uploadedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (transactionId.present) {
+      map['transaction_id'] = Variable<int>(transactionId.value);
+    }
+    if (vehicleId.present) {
+      map['vehicle_id'] = Variable<int>(vehicleId.value);
+    }
+    if (personId.present) {
+      map['person_id'] = Variable<int>(personId.value);
+    }
+    if (fileUrl.present) {
+      map['file_url'] = Variable<String>(fileUrl.value);
+    }
+    if (fileType.present) {
+      map['file_type'] = Variable<String>(fileType.value);
+    }
+    if (uploadedBy.present) {
+      map['uploaded_by'] = Variable<String>(uploadedBy.value);
+    }
+    if (uploadedAt.present) {
+      map['uploaded_at'] = Variable<DateTime>(uploadedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AttachmentsCompanion(')
+          ..write('id: $id, ')
+          ..write('transactionId: $transactionId, ')
+          ..write('vehicleId: $vehicleId, ')
+          ..write('personId: $personId, ')
+          ..write('fileUrl: $fileUrl, ')
+          ..write('fileType: $fileType, ')
+          ..write('uploadedBy: $uploadedBy, ')
+          ..write('uploadedAt: $uploadedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5124,6 +5563,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TruckDealsTable truckDeals = $TruckDealsTable(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
   late final $AuditLogsTable auditLogs = $AuditLogsTable(this);
+  late final $AttachmentsTable attachments = $AttachmentsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5139,7 +5579,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         trips,
         truckDeals,
         transactions,
-        auditLogs
+        auditLogs,
+        attachments
       ];
 }
 
@@ -5868,6 +6309,21 @@ final class $$PeopleTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$AttachmentsTable, List<Attachment>>
+      _attachmentsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.attachments,
+              aliasName:
+                  $_aliasNameGenerator(db.people.id, db.attachments.personId));
+
+  $$AttachmentsTableProcessedTableManager get attachmentsRefs {
+    final manager = $$AttachmentsTableTableManager($_db, $_db.attachments)
+        .filter((f) => f.personId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_attachmentsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$PeopleTableFilterComposer
@@ -5973,6 +6429,27 @@ class $$PeopleTableFilterComposer
             $$TransactionsTableFilterComposer(
               $db: $db,
               $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> attachmentsRefs(
+      Expression<bool> Function($$AttachmentsTableFilterComposer f) f) {
+    final $$AttachmentsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.attachments,
+        getReferencedColumn: (t) => t.personId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AttachmentsTableFilterComposer(
+              $db: $db,
+              $table: $db.attachments,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -6120,6 +6597,27 @@ class $$PeopleTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> attachmentsRefs<T extends Object>(
+      Expression<T> Function($$AttachmentsTableAnnotationComposer a) f) {
+    final $$AttachmentsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.attachments,
+        getReferencedColumn: (t) => t.personId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AttachmentsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.attachments,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$PeopleTableTableManager extends RootTableManager<
@@ -6137,7 +6635,8 @@ class $$PeopleTableTableManager extends RootTableManager<
         {bool personRolesRefs,
         bool vehiclesRefs,
         bool truckDealsRefs,
-        bool transactionsRefs})> {
+        bool transactionsRefs,
+        bool attachmentsRefs})> {
   $$PeopleTableTableManager(_$AppDatabase db, $PeopleTable table)
       : super(TableManagerState(
           db: db,
@@ -6188,14 +6687,16 @@ class $$PeopleTableTableManager extends RootTableManager<
               {personRolesRefs = false,
               vehiclesRefs = false,
               truckDealsRefs = false,
-              transactionsRefs = false}) {
+              transactionsRefs = false,
+              attachmentsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (personRolesRefs) db.personRoles,
                 if (vehiclesRefs) db.vehicles,
                 if (truckDealsRefs) db.truckDeals,
-                if (transactionsRefs) db.transactions
+                if (transactionsRefs) db.transactions,
+                if (attachmentsRefs) db.attachments
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -6250,6 +6751,19 @@ class $$PeopleTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.personId == item.id),
+                        typedResults: items),
+                  if (attachmentsRefs)
+                    await $_getPrefetchedData<PeopleData, $PeopleTable,
+                            Attachment>(
+                        currentTable: table,
+                        referencedTable:
+                            $$PeopleTableReferences._attachmentsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$PeopleTableReferences(db, table, p0)
+                                .attachmentsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.personId == item.id),
                         typedResults: items)
                 ];
               },
@@ -6273,7 +6787,8 @@ typedef $$PeopleTableProcessedTableManager = ProcessedTableManager<
         {bool personRolesRefs,
         bool vehiclesRefs,
         bool truckDealsRefs,
-        bool transactionsRefs})>;
+        bool transactionsRefs,
+        bool attachmentsRefs})>;
 typedef $$PersonRolesTableCreateCompanionBuilder = PersonRolesCompanion
     Function({
   Value<int> id,
@@ -6732,6 +7247,21 @@ final class $$VehiclesTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$AttachmentsTable, List<Attachment>>
+      _attachmentsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+          db.attachments,
+          aliasName:
+              $_aliasNameGenerator(db.vehicles.id, db.attachments.vehicleId));
+
+  $$AttachmentsTableProcessedTableManager get attachmentsRefs {
+    final manager = $$AttachmentsTableTableManager($_db, $_db.attachments)
+        .filter((f) => f.vehicleId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_attachmentsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$VehiclesTableFilterComposer
@@ -6899,6 +7429,27 @@ class $$VehiclesTableFilterComposer
             $$TransactionsTableFilterComposer(
               $db: $db,
               $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> attachmentsRefs(
+      Expression<bool> Function($$AttachmentsTableFilterComposer f) f) {
+    final $$AttachmentsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.attachments,
+        getReferencedColumn: (t) => t.vehicleId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AttachmentsTableFilterComposer(
+              $db: $db,
+              $table: $db.attachments,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7172,6 +7723,27 @@ class $$VehiclesTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> attachmentsRefs<T extends Object>(
+      Expression<T> Function($$AttachmentsTableAnnotationComposer a) f) {
+    final $$AttachmentsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.attachments,
+        getReferencedColumn: (t) => t.vehicleId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AttachmentsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.attachments,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$VehiclesTableTableManager extends RootTableManager<
@@ -7191,7 +7763,8 @@ class $$VehiclesTableTableManager extends RootTableManager<
         bool vehicleComponentsRefs,
         bool tripsRefs,
         bool truckDealsRefs,
-        bool transactionsRefs})> {
+        bool transactionsRefs,
+        bool attachmentsRefs})> {
   $$VehiclesTableTableManager(_$AppDatabase db, $VehiclesTable table)
       : super(TableManagerState(
           db: db,
@@ -7280,14 +7853,16 @@ class $$VehiclesTableTableManager extends RootTableManager<
               vehicleComponentsRefs = false,
               tripsRefs = false,
               truckDealsRefs = false,
-              transactionsRefs = false}) {
+              transactionsRefs = false,
+              attachmentsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (vehicleComponentsRefs) db.vehicleComponents,
                 if (tripsRefs) db.trips,
                 if (truckDealsRefs) db.truckDeals,
-                if (transactionsRefs) db.transactions
+                if (transactionsRefs) db.transactions,
+                if (attachmentsRefs) db.attachments
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -7376,6 +7951,19 @@ class $$VehiclesTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.vehicleId == item.id),
+                        typedResults: items),
+                  if (attachmentsRefs)
+                    await $_getPrefetchedData<Vehicle, $VehiclesTable,
+                            Attachment>(
+                        currentTable: table,
+                        referencedTable:
+                            $$VehiclesTableReferences._attachmentsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$VehiclesTableReferences(db, table, p0)
+                                .attachmentsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.vehicleId == item.id),
                         typedResults: items)
                 ];
               },
@@ -7401,7 +7989,8 @@ typedef $$VehiclesTableProcessedTableManager = ProcessedTableManager<
         bool vehicleComponentsRefs,
         bool tripsRefs,
         bool truckDealsRefs,
-        bool transactionsRefs})>;
+        bool transactionsRefs,
+        bool attachmentsRefs})>;
 typedef $$VehicleComponentsTableCreateCompanionBuilder
     = VehicleComponentsCompanion Function({
   Value<int> id,
@@ -9783,6 +10372,21 @@ final class $$TransactionsTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
   }
+
+  static MultiTypedResultKey<$AttachmentsTable, List<Attachment>>
+      _attachmentsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.attachments,
+              aliasName: $_aliasNameGenerator(
+                  db.transactions.id, db.attachments.transactionId));
+
+  $$AttachmentsTableProcessedTableManager get attachmentsRefs {
+    final manager = $$AttachmentsTableTableManager($_db, $_db.attachments)
+        .filter((f) => f.transactionId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_attachmentsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$TransactionsTableFilterComposer
@@ -9993,6 +10597,27 @@ class $$TransactionsTableFilterComposer
                   $removeJoinBuilderFromRootComposer,
             ));
     return composer;
+  }
+
+  Expression<bool> attachmentsRefs(
+      Expression<bool> Function($$AttachmentsTableFilterComposer f) f) {
+    final $$AttachmentsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.attachments,
+        getReferencedColumn: (t) => t.transactionId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AttachmentsTableFilterComposer(
+              $db: $db,
+              $table: $db.attachments,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
   }
 }
 
@@ -10417,6 +11042,27 @@ class $$TransactionsTableAnnotationComposer
                 ));
     return composer;
   }
+
+  Expression<T> attachmentsRefs<T extends Object>(
+      Expression<T> Function($$AttachmentsTableAnnotationComposer a) f) {
+    final $$AttachmentsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.attachments,
+        getReferencedColumn: (t) => t.transactionId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AttachmentsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.attachments,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$TransactionsTableTableManager extends RootTableManager<
@@ -10438,7 +11084,8 @@ class $$TransactionsTableTableManager extends RootTableManager<
         bool tripId,
         bool dealId,
         bool accountId,
-        bool componentId})> {
+        bool componentId,
+        bool attachmentsRefs})> {
   $$TransactionsTableTableManager(_$AppDatabase db, $TransactionsTable table)
       : super(TableManagerState(
           db: db,
@@ -10555,10 +11202,11 @@ class $$TransactionsTableTableManager extends RootTableManager<
               tripId = false,
               dealId = false,
               accountId = false,
-              componentId = false}) {
+              componentId = false,
+              attachmentsRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [],
+              explicitlyWatchedTables: [if (attachmentsRefs) db.attachments],
               addJoins: <
                   T extends TableManagerState<
                       dynamic,
@@ -10656,7 +11304,21 @@ class $$TransactionsTableTableManager extends RootTableManager<
                 return state;
               },
               getPrefetchedDataCallback: (items) async {
-                return [];
+                return [
+                  if (attachmentsRefs)
+                    await $_getPrefetchedData<Transaction, $TransactionsTable,
+                            Attachment>(
+                        currentTable: table,
+                        referencedTable: $$TransactionsTableReferences
+                            ._attachmentsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$TransactionsTableReferences(db, table, p0)
+                                .attachmentsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.transactionId == item.id),
+                        typedResults: items)
+                ];
               },
             );
           },
@@ -10682,7 +11344,8 @@ typedef $$TransactionsTableProcessedTableManager = ProcessedTableManager<
         bool tripId,
         bool dealId,
         bool accountId,
-        bool componentId})>;
+        bool componentId,
+        bool attachmentsRefs})>;
 typedef $$AuditLogsTableCreateCompanionBuilder = AuditLogsCompanion Function({
   Value<int> id,
   Value<int?> transactionId,
@@ -10875,6 +11538,474 @@ typedef $$AuditLogsTableProcessedTableManager = ProcessedTableManager<
     (AuditLog, BaseReferences<_$AppDatabase, $AuditLogsTable, AuditLog>),
     AuditLog,
     PrefetchHooks Function()>;
+typedef $$AttachmentsTableCreateCompanionBuilder = AttachmentsCompanion
+    Function({
+  Value<int> id,
+  Value<int?> transactionId,
+  Value<int?> vehicleId,
+  Value<int?> personId,
+  required String fileUrl,
+  Value<String> fileType,
+  Value<String> uploadedBy,
+  Value<DateTime> uploadedAt,
+});
+typedef $$AttachmentsTableUpdateCompanionBuilder = AttachmentsCompanion
+    Function({
+  Value<int> id,
+  Value<int?> transactionId,
+  Value<int?> vehicleId,
+  Value<int?> personId,
+  Value<String> fileUrl,
+  Value<String> fileType,
+  Value<String> uploadedBy,
+  Value<DateTime> uploadedAt,
+});
+
+final class $$AttachmentsTableReferences
+    extends BaseReferences<_$AppDatabase, $AttachmentsTable, Attachment> {
+  $$AttachmentsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $TransactionsTable _transactionIdTable(_$AppDatabase db) =>
+      db.transactions.createAlias($_aliasNameGenerator(
+          db.attachments.transactionId, db.transactions.id));
+
+  $$TransactionsTableProcessedTableManager? get transactionId {
+    final $_column = $_itemColumn<int>('transaction_id');
+    if ($_column == null) return null;
+    final manager = $$TransactionsTableTableManager($_db, $_db.transactions)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_transactionIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $VehiclesTable _vehicleIdTable(_$AppDatabase db) =>
+      db.vehicles.createAlias(
+          $_aliasNameGenerator(db.attachments.vehicleId, db.vehicles.id));
+
+  $$VehiclesTableProcessedTableManager? get vehicleId {
+    final $_column = $_itemColumn<int>('vehicle_id');
+    if ($_column == null) return null;
+    final manager = $$VehiclesTableTableManager($_db, $_db.vehicles)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_vehicleIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $PeopleTable _personIdTable(_$AppDatabase db) => db.people
+      .createAlias($_aliasNameGenerator(db.attachments.personId, db.people.id));
+
+  $$PeopleTableProcessedTableManager? get personId {
+    final $_column = $_itemColumn<int>('person_id');
+    if ($_column == null) return null;
+    final manager = $$PeopleTableTableManager($_db, $_db.people)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_personIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$AttachmentsTableFilterComposer
+    extends Composer<_$AppDatabase, $AttachmentsTable> {
+  $$AttachmentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get fileUrl => $composableBuilder(
+      column: $table.fileUrl, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get fileType => $composableBuilder(
+      column: $table.fileType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get uploadedBy => $composableBuilder(
+      column: $table.uploadedBy, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get uploadedAt => $composableBuilder(
+      column: $table.uploadedAt, builder: (column) => ColumnFilters(column));
+
+  $$TransactionsTableFilterComposer get transactionId {
+    final $$TransactionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.transactionId,
+        referencedTable: $db.transactions,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TransactionsTableFilterComposer(
+              $db: $db,
+              $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$VehiclesTableFilterComposer get vehicleId {
+    final $$VehiclesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.vehicleId,
+        referencedTable: $db.vehicles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$VehiclesTableFilterComposer(
+              $db: $db,
+              $table: $db.vehicles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$PeopleTableFilterComposer get personId {
+    final $$PeopleTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.personId,
+        referencedTable: $db.people,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$PeopleTableFilterComposer(
+              $db: $db,
+              $table: $db.people,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$AttachmentsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AttachmentsTable> {
+  $$AttachmentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get fileUrl => $composableBuilder(
+      column: $table.fileUrl, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get fileType => $composableBuilder(
+      column: $table.fileType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get uploadedBy => $composableBuilder(
+      column: $table.uploadedBy, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get uploadedAt => $composableBuilder(
+      column: $table.uploadedAt, builder: (column) => ColumnOrderings(column));
+
+  $$TransactionsTableOrderingComposer get transactionId {
+    final $$TransactionsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.transactionId,
+        referencedTable: $db.transactions,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TransactionsTableOrderingComposer(
+              $db: $db,
+              $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$VehiclesTableOrderingComposer get vehicleId {
+    final $$VehiclesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.vehicleId,
+        referencedTable: $db.vehicles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$VehiclesTableOrderingComposer(
+              $db: $db,
+              $table: $db.vehicles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$PeopleTableOrderingComposer get personId {
+    final $$PeopleTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.personId,
+        referencedTable: $db.people,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$PeopleTableOrderingComposer(
+              $db: $db,
+              $table: $db.people,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$AttachmentsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AttachmentsTable> {
+  $$AttachmentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get fileUrl =>
+      $composableBuilder(column: $table.fileUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get fileType =>
+      $composableBuilder(column: $table.fileType, builder: (column) => column);
+
+  GeneratedColumn<String> get uploadedBy => $composableBuilder(
+      column: $table.uploadedBy, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get uploadedAt => $composableBuilder(
+      column: $table.uploadedAt, builder: (column) => column);
+
+  $$TransactionsTableAnnotationComposer get transactionId {
+    final $$TransactionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.transactionId,
+        referencedTable: $db.transactions,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TransactionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.transactions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$VehiclesTableAnnotationComposer get vehicleId {
+    final $$VehiclesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.vehicleId,
+        referencedTable: $db.vehicles,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$VehiclesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.vehicles,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$PeopleTableAnnotationComposer get personId {
+    final $$PeopleTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.personId,
+        referencedTable: $db.people,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$PeopleTableAnnotationComposer(
+              $db: $db,
+              $table: $db.people,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$AttachmentsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AttachmentsTable,
+    Attachment,
+    $$AttachmentsTableFilterComposer,
+    $$AttachmentsTableOrderingComposer,
+    $$AttachmentsTableAnnotationComposer,
+    $$AttachmentsTableCreateCompanionBuilder,
+    $$AttachmentsTableUpdateCompanionBuilder,
+    (Attachment, $$AttachmentsTableReferences),
+    Attachment,
+    PrefetchHooks Function(
+        {bool transactionId, bool vehicleId, bool personId})> {
+  $$AttachmentsTableTableManager(_$AppDatabase db, $AttachmentsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AttachmentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AttachmentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AttachmentsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int?> transactionId = const Value.absent(),
+            Value<int?> vehicleId = const Value.absent(),
+            Value<int?> personId = const Value.absent(),
+            Value<String> fileUrl = const Value.absent(),
+            Value<String> fileType = const Value.absent(),
+            Value<String> uploadedBy = const Value.absent(),
+            Value<DateTime> uploadedAt = const Value.absent(),
+          }) =>
+              AttachmentsCompanion(
+            id: id,
+            transactionId: transactionId,
+            vehicleId: vehicleId,
+            personId: personId,
+            fileUrl: fileUrl,
+            fileType: fileType,
+            uploadedBy: uploadedBy,
+            uploadedAt: uploadedAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int?> transactionId = const Value.absent(),
+            Value<int?> vehicleId = const Value.absent(),
+            Value<int?> personId = const Value.absent(),
+            required String fileUrl,
+            Value<String> fileType = const Value.absent(),
+            Value<String> uploadedBy = const Value.absent(),
+            Value<DateTime> uploadedAt = const Value.absent(),
+          }) =>
+              AttachmentsCompanion.insert(
+            id: id,
+            transactionId: transactionId,
+            vehicleId: vehicleId,
+            personId: personId,
+            fileUrl: fileUrl,
+            fileType: fileType,
+            uploadedBy: uploadedBy,
+            uploadedAt: uploadedAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$AttachmentsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {transactionId = false, vehicleId = false, personId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (transactionId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.transactionId,
+                    referencedTable:
+                        $$AttachmentsTableReferences._transactionIdTable(db),
+                    referencedColumn:
+                        $$AttachmentsTableReferences._transactionIdTable(db).id,
+                  ) as T;
+                }
+                if (vehicleId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.vehicleId,
+                    referencedTable:
+                        $$AttachmentsTableReferences._vehicleIdTable(db),
+                    referencedColumn:
+                        $$AttachmentsTableReferences._vehicleIdTable(db).id,
+                  ) as T;
+                }
+                if (personId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.personId,
+                    referencedTable:
+                        $$AttachmentsTableReferences._personIdTable(db),
+                    referencedColumn:
+                        $$AttachmentsTableReferences._personIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$AttachmentsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $AttachmentsTable,
+    Attachment,
+    $$AttachmentsTableFilterComposer,
+    $$AttachmentsTableOrderingComposer,
+    $$AttachmentsTableAnnotationComposer,
+    $$AttachmentsTableCreateCompanionBuilder,
+    $$AttachmentsTableUpdateCompanionBuilder,
+    (Attachment, $$AttachmentsTableReferences),
+    Attachment,
+    PrefetchHooks Function(
+        {bool transactionId, bool vehicleId, bool personId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -10901,4 +12032,6 @@ class $AppDatabaseManager {
       $$TransactionsTableTableManager(_db, _db.transactions);
   $$AuditLogsTableTableManager get auditLogs =>
       $$AuditLogsTableTableManager(_db, _db.auditLogs);
+  $$AttachmentsTableTableManager get attachments =>
+      $$AttachmentsTableTableManager(_db, _db.attachments);
 }

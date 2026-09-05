@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../providers.dart';
+import '../reports/reports_dashboard_screen.dart';
 import 'import_export_screen.dart';
+import 'pin_lock_screen.dart';
+import 'audit_log_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -80,7 +83,7 @@ class SettingsScreen extends ConsumerWidget {
 
             const SizedBox(height: 24),
             Text(
-              'MASTER DATA & CATEGORIES',
+              'REPORTS & ANALYTICS',
               style: GoogleFonts.outfit(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
@@ -90,16 +93,40 @@ class SettingsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             _buildSettingsTile(
-              icon: LucideIcons.tags,
-              title: 'Transaction Categories',
-              subtitle: 'Manage expense & income categories',
-              onTap: () {},
+              icon: LucideIcons.lineChart,
+              title: 'Reports Dashboard',
+              subtitle: 'P&L statements, trip profitability, & receivables',
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const ReportsDashboardScreen()));
+              },
+            ),
+
+            const SizedBox(height: 24),
+            Text(
+              'SECURITY & AUDIT',
+              style: GoogleFonts.outfit(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+                color: const Color(0xFF94A3B8),
+              ),
+            ),
+            const SizedBox(height: 8),
+            _buildSettingsTile(
+              icon: LucideIcons.lock,
+              title: 'Set App Lock PIN',
+              subtitle: 'Require 4-digit PIN when opening app',
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const PinLockScreen(isSetupMode: true)));
+              },
             ),
             _buildSettingsTile(
-              icon: LucideIcons.wallet,
-              title: 'Payment Accounts',
-              subtitle: 'Manage Cash, Bank, and UPI running accounts',
-              onTap: () {},
+              icon: LucideIcons.shieldCheck,
+              title: 'Financial Audit Trail Logs',
+              subtitle: 'View complete log of database creation & changes',
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const AuditLogScreen()));
+              },
             ),
 
             const SizedBox(height: 24),

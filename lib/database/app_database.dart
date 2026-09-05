@@ -19,6 +19,7 @@ part 'app_database.g.dart';
   TruckDeals,
   Transactions,
   AuditLogs,
+  Attachments,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -113,6 +114,20 @@ class AppDatabase extends _$AppDatabase {
 
       return txId;
     });
+  }
+
+  // --- ATTACHMENTS HELPER METHODS ---
+  Stream<List<Attachment>> watchTransactionAttachments(int transactionId) {
+    return (select(attachments)..where((tbl) => tbl.transactionId.equals(transactionId))).watch();
+  }
+
+  Future<int> insertAttachment(AttachmentsCompanion attachment) {
+    return into(attachments).insert(attachment);
+  }
+
+  // --- AUDIT LOGS HELPER METHODS ---
+  Stream<List<AuditLog>> watchAuditLogs() {
+    return (select(auditLogs)..orderBy([(tbl) => OrderingTerm.desc(tbl.timestamp)])).watch();
   }
 
   // --- TRIPS HELPER METHODS ---

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +7,7 @@ import 'package:drift/drift.dart' as drift;
 import 'package:intl/intl.dart';
 import '../../database/app_database.dart';
 import '../../providers.dart';
+import '../../widgets/attachment_picker_widget.dart';
 import 'add_category_dialog.dart';
 
 class RecordTransactionSheet extends ConsumerStatefulWidget {
@@ -30,6 +32,7 @@ class _RecordTransactionSheetState extends ConsumerState<RecordTransactionSheet>
   PaymentAccount? _selectedAccount;
   PeopleData? _selectedPerson;
   Vehicle? _selectedVehicle;
+  File? _attachedBillPhoto;
 
   bool _isSaving = false;
 
@@ -96,7 +99,7 @@ class _RecordTransactionSheetState extends ConsumerState<RecordTransactionSheet>
       final db = ref.read(databaseProvider);
       final user = ref.read(authServiceProvider).currentUser;
 
-      await db.createTransaction(
+      final txId = await db.createTransaction(
         TransactionsCompanion.insert(
           companyId: company.id,
           categoryId: _selectedCategory!.id,
@@ -112,6 +115,17 @@ class _RecordTransactionSheetState extends ConsumerState<RecordTransactionSheet>
           createdBy: drift.Value(user?.displayName ?? 'Owner'),
         ),
       );
+
+      // Save attachment if bill photo captured
+      if (_attachedBillPhoto != null) {
+        await db.insertAttachment(
+          AttachmentsCompanion.insert(
+            transactionId: drift.Value(txId),
+            fileUrl: _attachedBillPhoto!.path,
+            fileType: const drift.Value('Image'),
+          ),
+        );
+      }
 
       if (mounted) {
         Navigator.pop(context);
@@ -423,6 +437,14 @@ class _RecordTransactionSheetState extends ConsumerState<RecordTransactionSheet>
                     borderSide: const BorderSide(color: Color(0xFF334155)),
                   ),
                 ),
+              ),
+              const SizedBox(height: 16),
+
+              // Attachment Bill Photo Picker Widget
+              AttachmentPickerWidget(
+                onImageSelected: (file) {
+                  setState(() => _attachedBillPhoto = file);
+                },
               ),
 
               const SizedBox(height: 24),

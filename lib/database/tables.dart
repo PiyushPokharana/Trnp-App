@@ -144,3 +144,15 @@ class AuditLogs extends Table {
   TextColumn get userId => text()();
   DateTimeColumn get timestamp => dateTime().withDefault(currentDateAndTime)();
 }
+
+/// Attachments Table (Bills, Receipts, LR, RC copies)
+class Attachments extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get transactionId => integer().nullable().references(Transactions, #id)();
+  IntColumn get vehicleId => integer().nullable().references(Vehicles, #id)();
+  IntColumn get personId => integer().nullable().references(People, #id)();
+  TextColumn get fileUrl => text()();
+  TextColumn get fileType => text().withDefault(const Constant('Image'))(); // Image, PDF
+  TextColumn get uploadedBy => text().withDefault(const Constant('Owner'))();
+  DateTimeColumn get uploadedAt => dateTime().withDefault(currentDateAndTime)();
+}
