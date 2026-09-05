@@ -34,6 +34,73 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
+  // --- PEOPLE HELPER METHODS ---
+  Stream<List<PeopleData>> watchAllPeople() {
+    return (select(people)..where((tbl) => tbl.isActive.equals(true))).watch();
+  }
+
+  Future<int> insertPersonWithRoles(PeopleCompanion person, List<String> roles) async {
+    return transaction(() async {
+      final personId = await into(people).insert(person);
+      for (final r in roles) {
+        await into(personRoles).insert(PersonRolesCompanion.insert(
+          personId: personId,
+          role: r,
+        ));
+      }
+      return personId;
+    });
+  }
+
+  // --- VEHICLES HELPER METHODS ---
+  Stream<List<Vehicle>> watchVehiclesByCompany(int companyId) {
+    return (select(vehicles)..where((tbl) => tbl.companyId.equals(companyId))).watch();
+  }
+
+  Future<int> insertVehicle(VehiclesCompanion vehicle) {
+    return into(vehicles).insert(vehicle);
+  }
+
+  // --- CATEGORIES & ACCOUNTS HELPER METHODS ---
+  Stream<List<TransactionCategory>> watchCategories(String direction) {
+    return (select(transactionCategories)
+          ..where((tbl) => tbl.direction.equals(direction)))
+        .watch();
+  }
+
+  Stream<List<PaymentAccount>> watchPaymentAccounts() {
+    return (select(paymentAccounts)..where((tbl) => tbl.isActive.equals(true))).watch();
+  }
+
+  Future<int> insertCategory(TransactionCategoriesCompanion category) {
+    return into(transactionCategories).insert(category);
+  }
+
+  // --- TRANSACTIONS HELPER METHODS ---
+  Stream<List<Transaction>> watchRecentTransactions(int companyId, {int limit = 20}) {
+    return (select(transactions)
+          ..where((tbl) => tbl.companyId.equals(companyId) & tbl.isDeleted.equals(false))
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.date)])
+          ..limit(limit))
+        .watch();
+  }
+
+  Future<int> createTransaction(TransactionsCompanion tx) async {
+    return transaction(() async {
+      final txId = await into(transactions).insert(tx);
+
+      // Audit Log Entry
+      await into(auditLogs).insert(AuditLogsCompanion.insert(
+        transactionId: Value(txId),
+        action: 'Create',
+        userId: 'Owner',
+        newValueJson: Value('Amount: ${tx.amount.value}, Dir: ${tx.direction.value}'),
+      ));
+
+      return txId;
+    });
+  }
+
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) async {

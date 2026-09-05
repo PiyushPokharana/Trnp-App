@@ -6,6 +6,7 @@ import 'home/home_dashboard_screen.dart';
 import 'history/history_screen.dart';
 import 'master/master_directory_screen.dart';
 import 'settings/settings_screen.dart';
+import 'transaction/record_transaction_sheet.dart';
 
 class MainNavigationScreen extends ConsumerStatefulWidget {
   const MainNavigationScreen({super.key});
@@ -28,66 +29,9 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFF1E293B),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      backgroundColor: Colors.transparent,
       builder: (ctx) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
-            top: 20,
-            left: 20,
-            right: 20,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Record New Entry',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.outfit(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 16),
-              ListTile(
-                leading: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(LucideIcons.minusCircle, color: Colors.redAccent),
-                ),
-                title: Text('Money Paid / Expense', style: GoogleFonts.outfit(color: Colors.white)),
-                subtitle: const Text('Diesel, Toll, Repair, Labour, Advance', style: TextStyle(color: Color(0xFF94A3B8))),
-                onTap: () {
-                  Navigator.pop(ctx);
-                },
-              ),
-              const Divider(color: Color(0xFF334155)),
-              ListTile(
-                leading: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(LucideIcons.plusCircle, color: Colors.greenAccent),
-                ),
-                title: Text('Money Received / Income', style: GoogleFonts.outfit(color: Colors.white)),
-                subtitle: const Text('Freight Income, Part Sale, Payment Received', style: TextStyle(color: Color(0xFF94A3B8))),
-                onTap: () {
-                  Navigator.pop(ctx);
-                },
-              ),
-            ],
-          ),
-        );
+        return const RecordTransactionSheet(initialDirection: 'Outflow');
       },
     );
   }
